@@ -143,13 +143,10 @@ body, div, span, p, h1, h2, h3, h4, h5, h6, label, input, button {
 </div>
 
 <div class="top-right-actions">
-  <div id="messageNotificationWrapper">
-    <div id="messageBtn" title="Mesajlar">✉<div id="messageBadge">0</div></div>
-  </div>
   <div id="profileIcon" title="Profil">👤</div>
-  <button id="cargoBtn" title="Kargomu Al">Kargomu Al</button>
   <button id="logoutBtn" title="Çıkış">Çıkış</button>
 </div>
+
 
 <!-- ================= MESAJ MODAL ================= -->
 <div id="messageModal">
@@ -283,15 +280,6 @@ const securityStatus=document.getElementById("securityStatus"),
       oldPassword=document.getElementById("oldPassword"),
       newPassword=document.getElementById("newPassword"),
       updatePasswordBtn=document.getElementById("updatePasswordBtn"),
-      profileMessage=document.getElementById("profileMessage"),
-      messageBtn=document.getElementById("messageBtn"),
-      messageBadge=document.getElementById("messageBadge"),
-      messageModal=document.getElementById("messageModal"),
-      messageList=document.getElementById("messageList"),
-      messageDetail=document.getElementById("messageDetail"),
-      detailSubject=document.getElementById("detailSubject"),
-      detailContent=document.getElementById("detailContent"),
-      deleteMessageBtn=document.getElementById("deleteMessageBtn"),
       logoutBtn=document.getElementById("logoutBtn"),
       cargoBtn=document.getElementById("cargoBtn");
 
@@ -299,7 +287,6 @@ profileUsername.value=currentUser;
 profileIcon.addEventListener('click',()=>{profileModal.style.display='block';});
 profileClose.addEventListener('click',()=>{profileModal.style.display='none';});
 logoutBtn.addEventListener('click',()=>{sessionStorage.removeItem("currentUser"); window.location.href='index.html';});
-cargoBtn.addEventListener('click',()=>window.location.href='kargom.html');
 
 updatePasswordBtn.addEventListener('click',async()=>{
   profileMessage.innerText='';
@@ -494,28 +481,8 @@ function getTurkeyToday(){
   return `${turkey.getFullYear()}-${mm}-${dd}`;
 }
 
-const messagesRef = ref(db,'messages/'+currentUser);
-onValue(messagesRef, snapshot=>{
-    const val = snapshot.val(); messageList.innerHTML=''; messageDetail.style.display='none'; let count=0;
-    if(val){
-        const sortedKeys=Object.keys(val).sort((a,b)=>a-b);
-        for(const key of sortedKeys){
-            const msg=val[key]; count++;
-            const div=document.createElement('div'); div.classList.add('message-item');
-            div.innerHTML=`<div><strong>${msg.subject}</strong> - ${msg.from}</div>`;
-            div.addEventListener('click', ()=>{
-                detailSubject.innerText=`${msg.subject} - ${msg.from}`; detailContent.innerText=msg.content;
-                deleteMessageBtn.onclick=async()=>{ if(confirm('Mesajı silmek istediğinize emin misiniz?')){ await remove(ref(db,'messages/'+currentUser+'/'+key)); }};
-                messageDetail.style.display='flex';
-            });
-            messageList.appendChild(div);
-        }
-    }
-    messageBadge.innerText=count;
-});
 
-messageBtn.addEventListener('click',()=>{ messageModal.style.display='flex'; });
-messageModal.querySelector('.modalClose').addEventListener('click',()=>{ messageModal.style.display='none'; messageDetail.style.display='none'; });
+
 const eksikModal = document.getElementById("eksikDevriyeModal");
 const eksikText = document.getElementById("eksikDevriyeText");
 const eksikList = document.getElementById("eksikNoktalarListesi");
@@ -746,4 +713,5 @@ box-shadow:0 8px 30px rgba(0,0,0,0.6);
 
 </body>
 </html>
+
 
