@@ -230,15 +230,29 @@ async function getDynamicLastPatrolBy() {
 // Ekrana yazdır
 getDynamicLastPatrolBy().then(lastPatrol => {
   const statusDiv = document.getElementById("lastPatrolStatus");
+
   if (lastPatrol) {
+    // Firebase'den gelen tarih-saat string: "09.02.2026 12:40"
+    const dateTimeStr = lastPatrol.dateStr; 
+    const [datePart, timePart] = dateTimeStr.split(' '); // ["09.02.2026", "12:40"]
+
+    // Gün adını almak için Date objesi oluşturuyoruz
+    const [day, month, year] = datePart.split('.').map(Number);
+    const patrolDate = new Date(year, month - 1, day); // Ay JS'de 0-11
+
+    const weekday = patrolDate.toLocaleDateString('tr-TR', { weekday: 'long' }).toLowerCase();
+
+    // Ekrana yazdır
     statusDiv.innerHTML = `
-      <p>Denetleyen: <span style="color:#f1c40f;font-weight:bold;">${lastPatrol.name}</span></p>
-      <p>Denetleme Zamanı: <span style="color:#1abc9c;font-weight:bold;">${lastPatrol.dateStr}</span></p>
+      <p><strong>Denetleyen:</strong> <span style="color:#f1c40f;font-weight:bold;">${lastPatrol.name}</span></p>
+      <p><strong>Denetlenme Tarihi:</strong> <span style="color:#1abc9c;font-weight:bold;">${datePart} (${weekday})</span></p>
+      <p><strong>Denetleme Saati:</strong> <span style="color:#1abc9c;font-weight:bold;">${timePart}</span></p>
     `;
   } else {
     statusDiv.innerText = "Son devriye bilgisi bulunamadı.";
   }
 });
+
 
 
 function bildirimModalAc(){
